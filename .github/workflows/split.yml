@@ -1,0 +1,70 @@
+name: Split Workflow
+
+on: 
+    push:
+    pull_request:
+        branches:
+            - develop
+jobs:
+    lint-job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+        
+            - name: Setup Node.js in VM
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+            
+            - name: Run ESlint
+              run: npm run lint
+
+    test-job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+        
+            - name: Setup Node.js in VM
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run test cases
+              run: npm run test
+
+            
+    build-job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+        
+            - name: Setup Node.js in VM
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: make react build
+              run: npm run build
+
+            - name: create artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: react-build
+                  path: dist/
+                  retention-days: 5
+                   
